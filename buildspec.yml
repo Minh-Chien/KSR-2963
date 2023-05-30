@@ -1,0 +1,19 @@
+version: 0.2
+env:
+  parameter-store:
+   KATALON_API_KEY: /CodeBuild/KATALON_API_KEY
+phases:
+  pre_build:
+    commands:
+      - docker pull katalonstudio/katalon
+  build:
+    commands:
+      - docker run -t --rm -v "$(pwd)":/katalon/katalon/source katalonstudio/katalon katalon-execute.sh -apiKey=$KATALON_API_KEY -retry=0 -testSuitePath="Test Suites/healthcare-tests - TS_RegressionTest" -executionProfile="default" -browserType="Chrome" --config -proxy.auth.option=NO_PROXY -proxy.system.option=NO_PROXY -proxy.system.applyToDesiredCapabilities=true
+artifacts:
+  files:
+    - report/*
+reports: #New
+  KatalonTestReports: # CodeBuild will create a report group called "KatalonTetReport".
+    files: #Store all of the files
+      - 'report/JUnit_Report.xml'
+
